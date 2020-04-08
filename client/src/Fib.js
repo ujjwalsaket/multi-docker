@@ -36,17 +36,21 @@ class Fib extends React.Component {
   };
 
   renderSeenIndexes() {
-    return this.state.seenIndexes.map(({ number }) => number).join(", ");
+    if (Array.isArray(this.state.seenIndexes)) {
+      return this.state.seenIndexes.map(({ number }) => number).join(", ");
+    }
   }
 
   renderValues() {
     const entries = [];
-    for (let key in this.state.values) {
-      entries.push(
-        <div key={key}>
-          For inde {key} I calculated {this.state.values[key]}
-        </div>
-      );
+    if (typeof this.state.values === "object") {
+      for (let key in this.state.values) {
+        entries.push(
+          <div key={key}>
+            For index {key} I calculated {this.state.values[key]}
+          </div>
+        );
+      }
     }
     return entries;
   }
@@ -64,7 +68,7 @@ class Fib extends React.Component {
         </form>
         <h3>Indexes I have seen:</h3>
         {this.renderSeenIndexes()}
-        <h3>Calculated Vlaues:</h3>
+        <h3>Calculated Values:</h3>
         {this.renderValues()}
       </div>
     );
