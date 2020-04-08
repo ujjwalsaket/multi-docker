@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t ujjwalsaket/run-tests -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run ujjwalsaket/run-tests npm run test -- --coverage
+
+after_success:
+  - docker build -t ujjwalsaket/multi-client ./client
+  - docker build -t ujjwalsaket/multi-nginx ./nginx
+  - docker build -t ujjwalsaket/multi-server ./server
+  - docker build -t ujjwalsaket/multi-worker ./worker
+  # log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push ujjwalsaket/multi-client
+  - docker push ujjwalsaket/multi-nginx
+  - docker push ujjwalsaket/multi-server
+  - docker push ujjwalsaket/multi-worker
