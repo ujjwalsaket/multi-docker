@@ -1,4 +1,5 @@
 sudo: required
+language: generic
 services:
   - docker
 
@@ -6,7 +7,7 @@ before_install:
   - docker build -t ujjwalsaket/run-tests -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run ujjwalsaket/run-tests npm run test -- --coverage
+  - docker run -e CI=true ujjwalsaket/run-tests npm run test -- --coverage
 
 after_success:
   - docker build -t ujjwalsaket/multi-client ./client
